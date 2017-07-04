@@ -41,7 +41,7 @@ function downloadImageByURL(url, filePath) {
     .pipe(fs.createWriteStream(filePath));
 }
 // Invoke the function with arguments
-getRepoContributors('nodejs', 'node', (data) => {
+getRepoContributors(process.argv[2], process.argv[3], (data) => {
   data.forEach((contributor) => {
     downloadImageByURL(contributor.avatar_url, ('./avatars/' + contributor.login
      +  '.jpeg'));
