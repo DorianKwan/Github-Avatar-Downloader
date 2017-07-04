@@ -16,6 +16,7 @@ function getRequestOptions(path) {
 }
 // Function to get the contributors from a given repo
 function getRepoContributors(repoOwner, repoName, cb) {
+  if (repoOwner !== undefined || repoName !== undefined) {
   const path = repoOwner + '/' + repoName;
   request(getRequestOptions(path), function (error, response, body) {
     try {
@@ -25,6 +26,9 @@ function getRepoContributors(repoOwner, repoName, cb) {
       console.log(err)
     }
   });
+  } else {
+    console.log('No arguments given, program terminated..')
+  }
 }
 // Callback function to download images to disk
 function downloadImageByURL(url, filePath) {
