@@ -1,4 +1,5 @@
 const request = require('request');
+const fs = require('fs');
 // Log a welcome message to the user
 console.log('Welcome to the GitHub Avatar Downloader!');
 // Function to create request options
@@ -21,13 +22,28 @@ function getRepoContributors(repoOwner, repoName, cb) {
       const data = JSON.parse(body);
       cb(data);
     } catch (err) {
-      console.log('Failed to parse content body')
+      console.log(err)
     }
   });
+}
+// Callback function to download images to disk
+function downloadImageByURL(url, filePath) {
+  if (!(fs.existsSync('./avatars'))) {
+    fs.mkdir('./avatars')
+  }
+  request.get(url)
+    .on('error', function(err) {
+      throw err;
+    })
+    .on('response', function(response) {
+      console.log('Response Status Code:', response.statusCode);
+    })
+    .pipe(fs.createWriteStream(filePath));
 }
 // Invoke the function with arguments
 getRepoContributors('nodejs', 'node', (data) => {
   data.forEach((contributor) => {
-    console.log(contributor.avatar_url);
+    downloadImageByURL(contributor.avatar_url, ('./avatars/' + contributor.login
+     +  '.jpeg'));
   })
 });
